@@ -1,0 +1,18 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<br><br>
+<div class="columnstyle">
+	{% for photo in photos %}
+		<div class="card border-dark mb-3" style="width:45rem;" >
+			<img class="card-img-top" src="{{ photo.img.url }}" alt="Card image cap">
+			<div class="card-body text-dark">
+				<div class="bla">
+				<div class="user">{{ photo.user }} | {{ photo.user.email }}</div><div class="user-info"><i class="fas fa-heart"> 120</i> likes </div>
+				</div>
+			</div>
+			<div class="button-comment"><a href="#" class="btn btn-warning" >Show 5 comments</a></div>
+		</div>
+	{% endfor %}
+</div>
+{% endblock %}
