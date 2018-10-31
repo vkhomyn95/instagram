@@ -5,9 +5,14 @@ from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
+from django.urls import reverse_lazy
 
 
 class Photo(models.Model):
     img = models.ImageField(upload_to='photos/', null=False, blank=False)
     date = models.DateTimeField(auto_now_add=True)
+    description = models.CharField(max_length=250)
     user = models.ForeignKey(User)
+
+    def get_absolute_url(self):
+        return reverse_lazy('photo_detail', kwargs={'pk': self.pk})

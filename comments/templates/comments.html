@@ -1,0 +1,11 @@
+{% extends 'main.html'%}
+{% block content %}
+
+	{% for comment in comments %}
+		<div class="comment-wrapp">
+			<div class="user"><strong>{{ comment.user }}</strong></div>
+			<div class="information"> {{ comment.text }} </div>
+		</div>
+	{% endfor %}
+
+{% endblock %}

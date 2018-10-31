@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -22,8 +21,4 @@ def register(request):
         return render(request, 'accounts/reg_form.html', args)
 
 
-
-def upload_photo(request):
-
-    return render(request, 'upload_photo.html', {})
 

@@ -1,4 +1,8 @@
 {% extends 'main.html' %}
 {% block content %}
-<h1>here we will get access to upload your photos</h1>
+<form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit">Добавити фотографію</button>
+</form>
 {% endblock %}

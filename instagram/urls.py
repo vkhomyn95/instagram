@@ -16,14 +16,12 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
-from home import views
 from instagram import settings
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'', include('home.urls')),
     url(r'', include('photos.urls')),
-    url(r'^upload-photo/', views.upload_photo, name='upload_photo'),
 
 ]
 

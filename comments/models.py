@@ -1,15 +1,22 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.contrib.auth.models import User
 from django.db import models
 
 
 # Create your models here.
+from photos.models import Photo
 
 
 class Comment(models.Model):
+    user = models.ForeignKey(User)
+    post = models.ForeignKey(Photo)
+    text = models.TextField(max_length=160)
     date = models.DateTimeField(auto_now_add=True)
-    text = models.CharField(max_length=200)
+
+    class Meta:
+        ordering = ('-date',)
 
 
 
