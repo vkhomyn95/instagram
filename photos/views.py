@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 
 from django.views.generic import ListView, DetailView, CreateView
 
+from comments.forms import CommentForm
 from photos.forms import PhotoAddForm
 from photos.models import Photo
 
@@ -21,6 +22,11 @@ class PhotoDetailView(DetailView):
     model = Photo
     context_object_name = 'photo'
     template_name = 'photo_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(PhotoDetailView, self).get_context_data(**kwargs)
+        context['form'] = CommentForm()
+        return context
 
 
 class AddPhotoView(CreateView):

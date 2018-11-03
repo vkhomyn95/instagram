@@ -11,7 +11,7 @@ from photos.models import Photo
 
 class Comment(models.Model):
     user = models.ForeignKey(User)
-    post = models.ForeignKey(Photo)
+    post = models.ForeignKey(Photo, related_name='comments')
     text = models.TextField(max_length=160)
     date = models.DateTimeField(auto_now_add=True)
 
