@@ -28,4 +28,5 @@ class CommentCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+
         return super(CommentCreateView, self).form_valid(form)

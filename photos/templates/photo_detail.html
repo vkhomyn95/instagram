@@ -8,7 +8,23 @@
 			<img class="card-img-top" src="{{ photo.img.url }}" alt="Card image cap">
 			<div class="card-body text-dark">
 				<div class="bla">
-				<div class="user">{{ photo.user }} | {{ photo.user.email }}</div><div class="user-info"><i class="fas fa-heart"> 120</i> likes </div>
+				<div class="user">{{ photo.user }} | {{ photo.user.email }}</div><div class="user-info">
+					{% if user.is_authenticated %}
+
+					{% for like in photo.likes.all %}
+					{{ like }}
+					{% endfor %}
+
+					<form action="{% url 'like_photo' %}" method="post">
+							{% csrf_token %}
+							{% if photo.is_liked %}
+							<button type="submit" value="{{ photo.id }}" name="photo_id" class="btn btn-danger">Dislike</button>
+							{% else %}
+								<button type="submit" value="{{ photo.id }}" name="photo_id" class="btn btn-primary">Like</button>
+							{% endif %}
+						</form>
+					{% endif %}
+					<i class="fas fa-heart"></i> {{ photo.total_likes}} </div>
 				</div>
 			</div>
 		</div>
@@ -17,7 +33,8 @@
         <p class="text-style-description"> {{ photo.description }} </p>
 	</div>
 	</div>
-	{% include 'addcomment.html' %}
+	по урлі upload-photo2
+	{% include 'addcomment.html' with form=form %}
 	{% for comment in photo.comments.all %}
 		<div class="comment-wrapp">
 			<div class="user"><strong>{{ comment.user }}</strong></div>

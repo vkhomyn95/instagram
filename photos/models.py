@@ -13,6 +13,10 @@ class Photo(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=250)
     user = models.ForeignKey(User)
+    likes = models.ManyToManyField(User, related_name='likes', blank=True)
 
     def get_absolute_url(self):
         return reverse_lazy('photo_detail', kwargs={'pk': self.pk})
+
+    def total_likes(self):
+        return self.likes.count()
