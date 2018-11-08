@@ -17,11 +17,7 @@
         <p class="text-style-description"> {{ photo.description }} </p>
 	</div>
 	</div>
-	<form action="" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{form}}
-        <button type="submit">Добавити коментар</button>
-    </form>
+	{% include 'addcomment.html' %}
 	{% for comment in photo.comments.all %}
 		<div class="comment-wrapp">
 			<div class="user"><strong>{{ comment.user }}</strong></div>

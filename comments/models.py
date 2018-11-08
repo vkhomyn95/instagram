@@ -6,6 +6,8 @@ from django.db import models
 
 
 # Create your models here.
+from django.urls import reverse_lazy
+
 from photos.models import Photo
 
 
@@ -17,6 +19,9 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ('-date',)
+
+    def get_absolute_url(self):
+        return reverse_lazy('photo_detail', kwargs={'pk': 1})
 
 
 

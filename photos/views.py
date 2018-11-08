@@ -2,8 +2,9 @@
 from __future__ import unicode_literals
 
 # Create your views here.
-
+from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic.edit import FormMixin, ModelFormMixin
 
 from comments.forms import CommentForm
 from photos.forms import PhotoAddForm
@@ -23,11 +24,6 @@ class PhotoDetailView(DetailView):
     context_object_name = 'photo'
     template_name = 'photo_detail.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(PhotoDetailView, self).get_context_data(**kwargs)
-        context['form'] = CommentForm()
-        return context
-
 
 class AddPhotoView(CreateView):
 
@@ -39,9 +35,5 @@ class AddPhotoView(CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super(AddPhotoView, self).form_valid(form)
-
-
-
-
 
 
