@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.http import HttpResponseRedirect
-from django.shortcuts import redirect, get_object_or_404
-from django.urls import reverse, reverse_lazy
-from django.views.generic import ListView, CreateView, DetailView
-from django.views.generic.edit import FormMixin, ModelFormMixin
+from django.views.generic import ListView, CreateView
+
 
 from comments.forms import CommentForm
 from comments.models import Comment
-from photos.models import Photo
 
 
 class CommentView(ListView):

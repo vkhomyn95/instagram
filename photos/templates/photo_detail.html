@@ -3,12 +3,12 @@
 <br>
 <div class="container">
     <div class="p">
-	<div class="cont-line">
-		<div class="card border-dark mb-3" style="width:35rem;" >
+	<div class="columnstyle">
+		<div class="card border-dark mb-3"  >
 			<img class="card-img-top" src="{{ photo.img.url }}" alt="Card image cap">
 			<div class="card-body text-dark">
 				<div class="bla">
-				<div class="user">{{ photo.user }} | {{ photo.user.email }}</div><div class="user-info">
+				<div class="user">{{ photo.user }}</div><div class="user-info">
 					{% if user.is_authenticated %}
 
 					{% for like in photo.likes.all %}
@@ -27,14 +27,17 @@
 					<i class="fas fa-heart"></i> {{ photo.total_likes}} </div>
 				</div>
 			</div>
+			<p class="text-style-description"> {{ photo.description }} </p>
 		</div>
 	</div>
-	<div class="cont-line">
-        <p class="text-style-description"> {{ photo.description }} </p>
 	</div>
-	</div>
-	по урлі upload-photo2
-	{% include 'addcomment.html' with form=form %}
+	<form action="" method="POST">
+    {% csrf_token %}
+    <table>
+        {{ form.as_p }}
+    </table>
+    <input type="submit" name="submit" value="Submit" />
+</form>
 	{% for comment in photo.comments.all %}
 		<div class="comment-wrapp">
 			<div class="user"><strong>{{ comment.user }}</strong></div>

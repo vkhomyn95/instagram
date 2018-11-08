@@ -4,17 +4,28 @@
 <br><br>
 <div class="columnstyle">
 	{% for photo in photos %}
-	<a href="{% url 'photo_detail' photo.pk %}" >
-		<div class="card border-dark mb-3" style="width:45rem;" >
-			<img class="card-img-top" src="{{ photo.img.url }}" alt="Card image cap">
+		<div class="card border-dark mb-3"  >
+			<a href="{% url 'photo_detail' photo.pk %}" >
+				<img class="card-img-top" src="{{ photo.img.url }}" alt="Card image cap">
+			</a>
 			<div class="card-body text-dark">
 				<div class="bla">
-				<div class="user">{{ photo.user }} | {{ photo.user.email }}</div><div class="user-info"><i class="fas fa-heart"> 120</i> likes </div>
+				<div class="user">{{ photo.user }} | {{ photo.user.email }}</div><div class="user-info">
+					{% if user.is_authenticated %}
+					<form action="{% url 'like_photo' %}" method="post">
+						{% csrf_token %}
+						{% if photo.is_liked %}
+						<button type="submit" value="{{ photo.id }}" name="photo_id" class="btn btn-danger">Dislike</button>
+						{% else %}
+							<button type="submit" value="{{ photo.id }}" name="photo_id" class="btn btn-primary">Like</button>
+						{% endif %}
+					</form>
+					{% endif %}
+					<i class="fas fa-heart"> {{ photo.total_likes}}</i> likes </div>
 				</div>
 			</div>
 			<div class="button-comment"><a href="#" class="btn btn-warning" >Show 5 comments</a></div>
 		</div>
-	</a>
 	{% endfor %}
 </div>
 {% endblock %}

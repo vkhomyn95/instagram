@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 # Create your views here.
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView
@@ -33,11 +33,38 @@ class AddPhotoView(CreateView):
         return super(AddPhotoView, self).form_valid(form)
 
 
-class PhotoDetailView(DetailView):
+class PhotoDetailView(FormMixin, DetailView):
 
     model = Photo
     context_object_name = 'photo'
     template_name = 'photo_detail.html'
+    form_class = CommentForm
+
+    def get_success_url(self):
+        return reverse('photo_detail', kwargs={'pk': self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        context = super(PhotoDetailView, self).get_context_data(**kwargs)
+        context['form'] = self.get_form()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated():
+            return HttpResponseForbidden()
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        link = get_object_or_404(Photo, pk=self.object.pk)
+        f = form.save(commit=False)
+        f.user = self.request.user
+        f.link = link
+        f.save()
+        return super(PhotoDetailView, self).form_valid(form)
 
 
 def like_photo(request):
@@ -51,8 +78,3 @@ def like_photo(request):
         is_liked = True
     return HttpResponseRedirect(photo.get_absolute_url())
 
-#
-# class UserListView(ListView):
-#     model = Photo
-#     template_name = 'liked_users.html'
-#     context_object_name = 'users'

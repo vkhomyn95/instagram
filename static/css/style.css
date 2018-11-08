@@ -10,9 +10,6 @@
 	font-weight: 400;
 	font-size: 16px;
 }
-.user-info{
-	font-size: 19px;
-}
 .button-comment{
 	margin:0 auto;
 	padding-bottom: 20px;
@@ -125,8 +122,17 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
-  width: 50%;
+  width: 60%;
   margin: 0 auto;
+}
+@media screen and (max-width: 600px) {
+.columnstyle{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 96%;
+  margin: 0 auto;
+}
 }
 .p {
   display: flex;
@@ -160,11 +166,4 @@
 }
 .container-wrapper{
     margin-top:20px;
-}
-.columnstyle{
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    width: 50%;
-    margin: 0 auto;
 }
