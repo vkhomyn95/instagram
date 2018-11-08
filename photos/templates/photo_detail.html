@@ -32,12 +32,10 @@
 	</div>
 	</div>
 	<form action="" method="POST">
-    {% csrf_token %}
-    <table>
-        {{ form.as_p }}
-    </table>
-    <input type="submit" name="submit" value="Submit" />
-</form>
+		{% csrf_token %}
+			{{ form }}
+		<input type="submit" name="submit" value="Submit" />
+	</form>
 	{% for comment in photo.comments.all %}
 		<div class="comment-wrapp">
 			<div class="user"><strong>{{ comment.user }}</strong></div>

@@ -59,10 +59,9 @@ class PhotoDetailView(FormMixin, DetailView):
             return self.form_invalid(form)
 
     def form_valid(self, form):
-        link = get_object_or_404(Photo, pk=self.object.pk)
         f = form.save(commit=False)
         f.user = self.request.user
-        f.link = link
+        f.post_id = self.kwargs['pk']
         f.save()
         return super(PhotoDetailView, self).form_valid(form)
 
