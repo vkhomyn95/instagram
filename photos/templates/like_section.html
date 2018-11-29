@@ -1,0 +1,16 @@
+{% if request.user.is_authenticated %}
+    <form action="{% url 'like_photo' %}" method="post">
+        {% csrf_token %}
+        {% if is_liked %}
+            <button type="submit" id="like" name="photo_id" value="{{ photo.id }}" class="btn btn-danger">Dislike</button>
+        {% else %}
+            <button type="submit" id="like" name="photo_id" value="{{ photo.id }}" class="btn btn-danger">Like</button>
+        {% endif %}
+    </form>
+<div class="user-info">
+    <i class="fas fa-heart"> {{ photo.total_likes}}</i> likes </div>
+    {% for like in photo.likes.all %}
+        {{ like }}
+    {% endfor %}
+</div>
+{% endif %}

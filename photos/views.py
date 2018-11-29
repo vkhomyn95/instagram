@@ -2,11 +2,15 @@
 from __future__ import unicode_literals
 
 # Create your views here.
-from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.shortcuts import get_object_or_404, render
+from django.core.serializers import json
+from django.http import HttpResponseRedirect, HttpResponseForbidden, JsonResponse, HttpResponse
+from django.shortcuts import get_object_or_404, render, render_to_response
+from django.template import RequestContext
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView
 from django.views.generic.edit import FormMixin, ModelFormMixin
+from requests import Response
 
 from comments.forms import CommentForm
 from comments.models import Comment
@@ -59,15 +63,16 @@ class PhotoDetailView(FormMixin, DetailView):
             return self.form_invalid(form)
 
     def form_valid(self, form):
-        f = form.save(commit=False)
-        f.user = self.request.user
-        f.post_id = self.kwargs['pk']
-        f.save()
+        if self.request.is_ajax():
+            f = form.save(commit=False)
+            f.user = self.request.user
+            f.post_id = self.kwargs['pk']
+            f.save()
         return super(PhotoDetailView, self).form_valid(form)
 
 
 def like_photo(request):
-    photo = get_object_or_404(Photo, id=request.POST.get('photo_id'))
+    photo = get_object_or_404(Photo, id=request.POST.get('id'))
     is_liked = False
     if photo.likes.filter(id=request.user.id).exists():
         photo.likes.remove(request.user)
@@ -75,5 +80,11 @@ def like_photo(request):
     else:
         photo.likes.add(request.user)
         is_liked = True
-    return HttpResponseRedirect(photo.get_absolute_url())
-
+    context = {
+        'is_likes': is_liked,
+        'photo': photo,
+        'total_likes': photo.total_likes(),
+    }
+    if request.is_ajax():
+        html = render_to_string('like_section.html', context, request=request)
+    return JsonResponse({'form': html})

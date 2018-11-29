@@ -5,6 +5,8 @@ from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.urls import reverse
+
+from comments.models import Comment
 from home.forms import RegistrationForm
 
 

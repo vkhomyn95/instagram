@@ -11,21 +11,34 @@
 			<div class="card-body text-dark">
 				<div class="bla">
 				<div class="user">{{ photo.user }} | {{ photo.user.email }}</div><div class="user-info">
-					{% if user.is_authenticated %}
-					<form action="{% url 'like_photo' %}" method="post">
-						{% csrf_token %}
-						{% if photo.is_liked %}
-						<button type="submit" value="{{ photo.id }}" name="photo_id" class="btn btn-danger">Dislike</button>
-						{% else %}
-							<button type="submit" value="{{ photo.id }}" name="photo_id" class="btn btn-primary">Like</button>
-						{% endif %}
-					</form>
-					{% endif %}
-					<i class="fas fa-heart"> {{ photo.total_likes}}</i> likes </div>
+
+					{% include 'like_section.html' %}
+
 				</div>
 			</div>
-			<div class="button-comment"><a href="#" class="btn btn-warning" >Show 5 comments</a></div>
+			<div class="button-comment"><button class="btn btn-warning" data-id="{{ photo.id }}"  >Show 5 comments</button></div>
+			<div class="paginate-five-comments{{ photo.id }}">
+				{% for comment in photo.comments.all|slice:":5"  %}
+					<div class="comment-wrapp">
+						<div class="user"><strong>{{ comment.user }}</strong></div>
+						<div class="information"> {{ comment.text }} </div>
+					</div>
+				{% endfor %}
+			</div>
 		</div>
 	{% endfor %}
 </div>
+<script>
+$(document).ready(function(){
+	 $('.btn-cta-secondary').click(function (e) {
+    var id = $(e.currentTarget).data('id')
+    $('#til' + id).toggle()
+  })
+});
+</script>
+<style>
+.paginate-five-comments {
+    display:none;
+}
+</style>
 {% endblock %}
