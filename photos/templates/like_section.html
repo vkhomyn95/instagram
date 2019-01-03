@@ -1,5 +1,5 @@
 {% if request.user.is_authenticated %}
-    <form action="{% url 'like_photo' %}" method="post">
+    <form action="{% url 'like_photo'  %}" method="post">
         {% csrf_token %}
         {% if is_liked %}
             <button type="submit" id="like" name="photo_id" value="{{ photo.id }}" class="btn btn-danger">Dislike</button>

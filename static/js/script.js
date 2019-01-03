@@ -6,11 +6,10 @@ $(document).ready(function(){
         var thisForm = $(this)
         var actionPoint = thisForm.attr('action');
         var httpMethod = thisForm.attr('method');
-        var formData = thisForm.serialize();
         $.ajax({
             url: actionPoint,
             method: httpMethod,
-            data: formData,
+            data: {csrfmiddlewaretoken:'{{csrf_token}}' },
             success : function(data){
                 $(".block-to-be-refreshed").load(" .block-to-be-refreshed");
                 console.log('success')
