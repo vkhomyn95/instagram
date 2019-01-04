@@ -4,37 +4,39 @@
 <br><br>
 <div class="columnstyle">
 	{% for photo in photos %}
+        {{ photo.sender }}
 		<div class="card border-dark mb-3"  >
 			<a href="{% url 'photo_detail' photo.pk %}" >
 				<img class="card-img-top" src="{{ photo.img.url }}" alt="Card image cap">
 			</a>
 			<div class="card-body text-dark">
 				<div class="bla">
-				<div class="user">{{ photo.user }} | {{ photo.user.email }}</div><div class="user-info">
-
-					{% include 'like_section.html' %}
-
-				</div>
-			</div>
-			<div class="button-comment"><button class="btn btn-warning" data-id="{{ photo.id }}"  >Show 5 comments</button></div>
-			<div class="paginate-five-comments{{ photo.id }}">
-				{% for comment in photo.comments.all|slice:":5"  %}
-					<div class="comment-wrapp">
-						<div class="user"><strong>{{ comment.user }}</strong></div>
-						<div class="information"> {{ comment.text }} </div>
+					<div class="user">{{ photo.user }} | {{ photo.user.email }}</div><div class="user-info">
+						{% include 'like_section.html' with is_liked=photo.is_liked_by_user %}
 					</div>
-				{% endfor %}
-			</div>
-		</div>
+				</div>
+                <div class="button-comment">
+                    <button class="btn btn-warning" data-id="{{ photo.id }}">Show 5 comments</button>
+                </div>
+                <div class="paginate-five-comments{{ photo.id }}">
+                    {% for comment in photo.comments.all|slice:":5"  %}
+                        <div class="comment-wrapp">
+                            <div class="user"><strong>{{ comment.user }}</strong></div>
+                            <div class="information"> {{ comment.text }} </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
 	{% endfor %}
 </div>
 <script>
-$(document).ready(function(){
-	 $('.btn-cta-secondary').click(function (e) {
-    var id = $(e.currentTarget).data('id')
-    $('#til' + id).toggle()
-  })
-});
+	$(document).ready(function(){
+		 $('.btn-cta-secondary').click(function (e) {
+		var id = $(e.currentTarget).data('id')
+		$('#til' + id).toggle()
+	  })
+	});
 </script>
 <style>
 .paginate-five-comments {
