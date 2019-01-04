@@ -1,16 +1,25 @@
 {% if request.user.is_authenticated %}
-    <form action="{% url 'like_photo'  %}" method="post">
+
+    <form action="{% url 'like_photo'  %}" method="post" class="form-like-ajax">
+
         {% csrf_token %}
-        {% if is_liked %}
-            <button type="submit" id="like" name="photo_id" value="{{ photo.id }}" class="btn btn-danger">Dislike</button>
-        {% else %}
-            <button type="submit" id="like" name="photo_id" value="{{ photo.id }}" class="btn btn-danger">Like</button>
-        {% endif %}
+
+        <input type="hidden" value="{{ photo.id }}" name="photo_id">
+
+        <button type="submit" class="btn btn-danger"
+                id="button_like_photo_id__{{ photo.id }}">{% if is_liked %}Dislike{% else %}Like{% endif %}
+        </button>
+
     </form>
-<div class="user-info">
-    <i class="fas fa-heart"> {{ photo.total_likes}}</i> likes </div>
-    {% for like in photo.likes.all %}
-        {{ like }}
-    {% endfor %}
-</div>
+
+    <div class="user-info">
+        <i class="fas fa-heart" id="total_likes_photo_id__{{ photo.id }}">{{ photo.total_likes}}</i> likes
+    </div>
+
+    <ul id="users_photo_id__{{ photo.id }}">
+        {% for user in photo.likes.all %}
+            <li>{{ user }}</li>
+        {% endfor %}
+    </ul>
+
 {% endif %}

@@ -1,28 +1,27 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
-# Create your views here.
-from django.core.serializers import json
-from django.http import HttpResponseRedirect, HttpResponseForbidden, JsonResponse, HttpResponse
-from django.shortcuts import get_object_or_404, render, render_to_response
-from django.template import RequestContext
-from django.template.loader import render_to_string
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse, Http404
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView
-from django.views.generic.edit import FormMixin, ModelFormMixin
-from requests import Response
-
-from comments.forms import CommentForm
-from comments.models import Comment
-from photos.forms import PhotoAddForm
-from photos.models import Photo
+from comments.forms import AddCommentForm
+from .forms import PhotoAddForm
+from .models import Photo
 
 
 class PhotoView(ListView):
 
-    model = Photo
     context_object_name = 'photos'
     template_name = 'photos.html'
+
+    def get_queryset(self):
+        photos = list(
+            Photo.objects.all().select_related('user').prefetch_related('likes', 'comments', 'comments__user',)
+        )
+        for photo in photos:
+            if self.request.user in photo.likes.all():
+                setattr(photo, 'is_liked_by_user', True)
+        return photos
 
 
 class AddPhotoView(CreateView):
@@ -37,54 +36,44 @@ class AddPhotoView(CreateView):
         return super(AddPhotoView, self).form_valid(form)
 
 
-class PhotoDetailView(FormMixin, DetailView):
+class PhotoDetailView(DetailView):
 
-    model = Photo
+    queryset = Photo.objects.select_related('user').prefetch_related('comments', 'comments__user', 'likes')
     context_object_name = 'photo'
     template_name = 'photo_detail.html'
-    form_class = CommentForm
 
     def get_success_url(self):
         return reverse('photo_detail', kwargs={'pk': self.object.pk})
 
     def get_context_data(self, **kwargs):
         context = super(PhotoDetailView, self).get_context_data(**kwargs)
-        context['form'] = self.get_form()
+        context['form'] = AddCommentForm(initial={'post': self.object.pk})
+        context['is_liked_by_user'] = self.request.user in self.object.likes.all()
         return context
 
-    def post(self, request, *args, **kwargs):
-        if not request.user.is_authenticated():
-            return HttpResponseForbidden()
-        self.object = self.get_object()
-        form = self.get_form()
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
 
-    def form_valid(self, form):
-        if self.request.is_ajax():
-            f = form.save(commit=False)
-            f.user = self.request.user
-            f.post_id = self.kwargs['pk']
-            f.save()
-        return super(PhotoDetailView, self).form_valid(form)
-
-
+@login_required
 def like_photo(request):
-    photo = get_object_or_404(Photo, id=request.POST.get('id'))
-    is_liked = False
-    if photo.likes.filter(id=request.user.id).exists():
-        photo.likes.remove(request.user)
+    try:
+        photo = Photo.objects.get(pk=request.POST.get('photo_id'))
+    except Photo.DoesNotExist:
+        return JsonResponse({'errors': 'Invalid photo id'}, status=400)
+
+    if photo.likes.filter(pk=request.user.pk).exists():
         is_liked = False
+        photo.likes.remove(request.user)
     else:
-        photo.likes.add(request.user)
         is_liked = True
-    context = {
+        photo.likes.add(request.user)
+
+    data = {
+        'photo_id': request.POST.get('photo_id'),
         'is_likes': is_liked,
-        'photo': photo,
         'total_likes': photo.total_likes(),
+        'users': [user.username for user in photo.likes.all()]
     }
+
     if request.is_ajax():
-        html = render_to_string('like_section.html', context, request=request)
-    return JsonResponse({'form': html})
+        return JsonResponse(data)
+    else:
+        raise Http404

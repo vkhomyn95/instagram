@@ -11,17 +11,15 @@
 				<div class="bla">
 				<div class="user">{{ photo.user }}</div>
 					<div id="like-section">
-					{% include 'like_section.html' %}
-
+					    {% include 'like_section.html' with is_liked=is_liked_by_user %}
 					</div>
-
 				</div>
 			</div>
 			<p class="text-style-description"> {{ photo.description }} </p>
 		</div>
 	</div>
 	</div>
-	<form class="form-comment-ajax" action="" method="POST">
+	<form action="{% url 'add_comment' %}" method="POST" id="form-comment-ajax">
 		{% csrf_token %}
 			{{ form }}
 		<input type="submit" name="submit" value="Submit" />
@@ -30,31 +28,9 @@
 	{% for comment in photo.comments.all %}
 		<div class="comment-wrapp">
 			<div class="user"><strong>{{ comment.user }}</strong></div>
-			<div class="information"> {{ comment.text }} </div>
+			<div class="information"> {{ comment.text }}</div>
 		</div>
 	{% endfor %}
 	</div>
 </div>
-
-<script>
-$(document).ready(function(){
-    $(document).on('click','#like', function(event){
-    	event.preventDefault();
-		var pk = $(this).attr('value');
-		$.ajax({
-			type: 'POST',
-			url: '{% url 'like_photo' %}',
-			data: {'id':pk, 'csrfmiddlewaretoken': '{{ csrf_token }}' },
-			dataType: 'json',
-			success: function(response){
-				$('#like-section').html(response['form'])
-				console.log($('#like-section').html(response['form']))
-			},
-			error: function(rs,e){
-				console.log(rs.responseText);
-			},
-		});
-    });
-});
-</script>
 {% endblock %}
