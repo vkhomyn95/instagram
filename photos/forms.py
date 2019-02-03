@@ -7,4 +7,4 @@ class PhotoAddForm(forms.ModelForm):
 
     class Meta:
         model = Photo
-        fields = ('img', 'description')
+        fields = ('img', 'description','tags')

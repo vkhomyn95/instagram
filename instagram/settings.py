@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'debug_toolbar',
+    'taggit',
     'photos',
     'comments',
     'home',
@@ -129,12 +130,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
-)
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
 )
+
+
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 

@@ -13,34 +13,18 @@
 				<div class="bla">
 					<div class="user">{{ photo.user }} | {{ photo.user.email }}</div><div class="user-info">
 						{% include 'like_section.html' with is_liked=photo.is_liked_by_user %}
+
+                    {% for tag in photo.tags.all %}
+                        <a href="{% url 'tagged' tag.slug %}"> #{{ tag.name }} </a>
+                    {% endfor %}
 					</div>
 				</div>
                 <div class="button-comment">
-                    <button class="btn btn-warning" data-id="{{ photo.id }}">Show 5 comments</button>
+                    <button class="btn btn-warning" data-id="{{ photo.id }}" onclick="ShowComments()">Show 5 comments</button>
                 </div>
-                <div class="paginate-five-comments{{ photo.id }}">
-                    {% for comment in photo.comments.all|slice:":5"  %}
-                        <div class="comment-wrapp">
-                            <div class="user"><strong>{{ comment.user }}</strong></div>
-                            <div class="information"> {{ comment.text }} </div>
-                        </div>
-                    {% endfor %}
-                </div>
+                {% include 'comments.html' %}
             </div>
         </div>
 	{% endfor %}
 </div>
-<script>
-	$(document).ready(function(){
-		 $('.btn-cta-secondary').click(function (e) {
-		var id = $(e.currentTarget).data('id')
-		$('#til' + id).toggle()
-	  })
-	});
-</script>
-<style>
-.paginate-five-comments {
-    display:none;
-}
-</style>
 {% endblock %}

@@ -13,7 +13,7 @@ from photos.models import Photo
 
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey(Photo, related_name='comments', on_delete=models.PROTECT)
+    post = models.ForeignKey(Photo, related_name='comments', on_delete=models.CASCADE)
     text = models.TextField(max_length=160)
     date = models.DateTimeField(auto_now_add=True)
 

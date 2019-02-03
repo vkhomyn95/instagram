@@ -1,11 +1,15 @@
 {% extends 'main.html' %}
 {% block content %}
-<div class="container">
-    <h4>Login</h4>
+<h4 class="login-title">Login</h4>
+<div class="wrapper-login">
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Login</button>
+        <button type="submit" class="form-submit-button">Login</button>
     </form>
+</div>
+<div class="container-reg">
+    <p class="login-p">Dont have an account?</p>
+    <p class="style-log-in"><a href="{% url 'register' %}">Register</a></p>
 </div>
 {% endblock %}

@@ -1,21 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
-
-# Create your views here.
-from django.urls import reverse
-
-from comments.models import Comment
 from home.forms import RegistrationForm
 
 
 def register(request):
-    if request.method =='POST':
+    if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse('accounts:home'))
+            return redirect('photo')
+        else:
+            return HttpResponse(u'Форма не валідна')
     else:
         form = RegistrationForm()
 

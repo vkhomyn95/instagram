@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse_lazy
+from taggit.managers import TaggableManager
 
 
 class Photo(models.Model):
@@ -11,9 +12,16 @@ class Photo(models.Model):
     description = models.CharField(max_length=250)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     likes = models.ManyToManyField(User, related_name='likes', blank=True)
+    tags = TaggableManager()
+
+    class Meta:
+        ordering = ('-date',)
 
     def get_absolute_url(self):
         return reverse_lazy('photo_detail', kwargs={'pk': self.pk})
 
     def total_likes(self):
         return self.likes.count()
+
+    def __str__(self):
+        return self.img

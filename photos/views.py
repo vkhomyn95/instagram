@@ -1,15 +1,27 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, Http404
+from django.core.paginator import PageNotAnInteger, Paginator, EmptyPage
+from django.db.models import ProtectedError
+from django.http import JsonResponse, Http404, HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render_to_response, render
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView
 from comments.forms import AddCommentForm
+from comments.models import Comment
 from .forms import PhotoAddForm
 from .models import Photo
+from taggit.models import Tag
 
 
-class PhotoView(ListView):
+class TagMixin(object):
+    def get_context_data(self, **kwargs):
+        context = super(TagMixin, self).get_context_data(**kwargs)
+        context['tags'] = Tag.objects.all()
+        return context
+
+
+class PhotoView(TagMixin, ListView):
 
     context_object_name = 'photos'
     template_name = 'photos.html'
@@ -34,6 +46,19 @@ class AddPhotoView(CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super(AddPhotoView, self).form_valid(form)
+
+
+@login_required
+def photo_delete_view(request, pk=None):
+    photo = get_object_or_404(Photo, pk=pk)
+    try:
+        if request.user == photo.user:
+            photo.delete()
+            return redirect('photo')
+        else:
+            return HttpResponse('You can not delete this photo . You are not owner')
+    except ProtectedError:
+        return redirect('photo')
 
 
 class PhotoDetailView(DetailView):
@@ -77,3 +102,21 @@ def like_photo(request):
         return JsonResponse(data)
     else:
         raise Http404
+
+
+class TagIndexView(TagMixin, ListView):
+    template_name = 'photos.html'
+    model = Photo
+    context_object_name = 'photos'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return Photo.objects.filter(tags__slug=self.kwargs.get('slug'))
+
+
+
+
+
+
+
+

@@ -9,10 +9,9 @@ $(document).ready(function(){
             data: commentForm.serialize(),
             success : function(data){
                 $(".block-to-be-refreshed").prepend('' +
-                    '<div class="comment-wrapp">' +
-                        '<div class="user"><strong>' + data["user"] + '</strong></div>' +
-                        '<div class="information">' + data["text"] + '</div>' +
-                    '</div>'
+
+                    '<p><strong>' + data["user"] + '</strong>' + ' ' + data["text"] + '</p>'
+
                 );
                 commentForm[0].reset();
             },
@@ -48,4 +47,19 @@ $(document).ready(function(){
            }
        })
    })
+
+   size_li = $("#block-to-be-refreshed p").length;
+    x=3;
+    $('#block-to-be-refreshed p:lt('+x+')').show();
+    $('#loadMore').click(function () {
+        x= (x+5 <= size_li) ? x+5 : size_li;
+        $('#block-to-be-refreshed p:lt('+x+')').show();
+    });
+    $('#showLess').click(function () {
+        x=(x-5<0) ? 3 : x-5;
+        $('#block-to-be-refreshed p').not(':lt('+x+')').hide();
+    });
+});
+$(window).bind("load", function() {
+
 });
