@@ -17,6 +17,7 @@
 .bla {
 	display: flex;
 	justify-content: space-between;
+	margin: 15px;
 }
 
 .card-signin {
@@ -125,7 +126,16 @@
   width: 60%;
   margin: 0 auto;
 }
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 500px) {
+.columnstyle{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 86%;
+  margin: 0 auto;
+}
+}
+@media screen and (max-width: 400px) {
 .columnstyle{
   display: flex;
   justify-content: center;
@@ -188,3 +198,12 @@
 .paginate-five-comments__3 {
     display: none;
 }
+.photo-content {
+    background-color: #f8f9fa !important;
+    margin:15px 0;
+}
+.btn-delete{
+    margin-bottom:20px;
+}
+
+

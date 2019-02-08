@@ -4,7 +4,7 @@ from photos import views
 from photos.views import PhotoView, PhotoDetailView, AddPhotoView, TagIndexView,  photo_delete_view
 
 urlpatterns = [
-    url(r'^$', PhotoView.as_view(), name='photo'),
+    url(r'^main/$', PhotoView.as_view(), name='photo'),
     url(r'^photo/(?P<pk>\d+)/$', PhotoDetailView.as_view(), name='photo_detail'),
     url(r'^upload-photo/$', AddPhotoView.as_view(), name='add_photo'),
     url(r'^delete/(?P<pk>\d+)/$',photo_delete_view, name='delete_photo'),
