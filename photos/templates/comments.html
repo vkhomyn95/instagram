@@ -1,3 +1,5 @@
-{% for comments in comment %}
-    <p><strong>{{ comments.user }}</strong> {{ comments.text }}</p>
-{% endfor %}
+<div id="block-to-be-refreshed">
+    {% for comment in comments %}
+        <p><strong>{{ comment.user }}</strong> {{ comment.text }}</p>
+    {% endfor %}
+</div>

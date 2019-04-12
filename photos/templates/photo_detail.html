@@ -1,9 +1,12 @@
 {% extends 'main.html'%}
 {% block content %}
+<script type="text/javascript">
+	window.CSRF_TOKEN = "{{ csrf_token }}";
+</script>
 <br><br>
 <div class="columnstyle">
 	{{ photo.sender }}
-	<div class="photo-content" style="background-color: #f8f9fa">
+	<div class="photo-content" style="background-color: #fafafa">
 		<a href="{% url 'photo_detail' photo.pk %}" >
 			<img class="img-fluid" src="{{ photo.img.url }}" alt="Card image cap" >
 		</a>
@@ -13,13 +16,30 @@
 				{% for tag in photo.tags.all %}
 					<a href="{% url 'tagged' tag.slug %}"> #{{ tag.name }} </a>
 				{% endfor %}
+			{% include 'like_section.html' %}
 			</div>
 		</div>
 	</div>
 	{% if user.is_authenticated %}
+
+		<form action="{% url 'add_comment' %}" method="POST" id="form-comment-ajax">
+			{% csrf_token %}
+				{{ form }}
+			<input type="submit" name="submit" value="Submit" />
+		</form>
+
+
+	<div id="posts">{% include 'comments.html' %}</div>
+	<div>
+      <a id="lazyLoadLink" href="javascript:void(0);" data-page="2">Load More Comments</a>
+    </div>
+
+
 		<div class="btn-delete">
 			<a class="btn-delete" style="color:white;background-color: #fc4205;padding:8px 5px; margin:20px 0;"  href="{% url 'delete_photo' photo.pk %}">Delete photo</a>
 		</div>
 	{% endif %}
+
 </div>
+
 {% endblock %}

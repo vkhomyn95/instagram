@@ -48,18 +48,31 @@ $(document).ready(function(){
        })
    })
 
-   size_li = $("#block-to-be-refreshed p").length;
-    x=3;
-    $('#block-to-be-refreshed p:lt('+x+')').show();
-    $('#loadMore').click(function () {
-        x= (x+5 <= size_li) ? x+5 : size_li;
-        $('#block-to-be-refreshed p:lt('+x+')').show();
+    $('#lazyLoadLink').on('click', function() {
+    var link = $(this);
+    var page = link.data('page');
+    $.ajax({
+      type: 'post',
+      url: '/lazy_load_posts/',
+      data: {
+        'page': page,
+        'csrfmiddlewaretoken': window.CSRF_TOKEN // from index.html
+      },
+      success: function(data) {
+        console.log(data)
+        if (data.has_next) {
+            link.data('page', page+1);
+        } else {
+          link.hide();
+        }
+
+        $('#posts').append(data.posts_html);
+      },
+      error: function(xhr, status, error) {
+
+      }
     });
-    $('#showLess').click(function () {
-        x=(x-5<0) ? 3 : x-5;
-        $('#block-to-be-refreshed p').not(':lt('+x+')').hide();
-    });
-});
-$(window).bind("load", function() {
+  });
+
 
 });

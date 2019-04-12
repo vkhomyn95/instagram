@@ -3,6 +3,9 @@
 	padding: 0;
 	text-decoration: none;
 }
+main {
+    background-color: #fafafa;
+}
 .nav-link:hover {
 	color: #fd7e14 !important;
 }
@@ -199,11 +202,14 @@
     display: none;
 }
 .photo-content {
-    background-color: #f8f9fa !important;
+    background-color: white !important;
     margin:15px 0;
 }
 .btn-delete{
-    margin-bottom:20px;
+    margin:20px;
 }
-
+#id_text {
+    height:30px;
+    width:auto;
+}
 
