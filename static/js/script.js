@@ -48,31 +48,46 @@ $(document).ready(function(){
        })
    })
 
-    $('#lazyLoadLink').on('click', function() {
-    var link = $(this);
-    var page = link.data('page');
-    $.ajax({
-      type: 'post',
-      url: '/lazy_load_posts/',
-      data: {
-        'page': page,
-        'csrfmiddlewaretoken': window.CSRF_TOKEN // from index.html
-      },
-      success: function(data) {
-        console.log(data)
-        if (data.has_next) {
-            link.data('page', page+1);
-        } else {
-          link.hide();
-        }
+//    $('#lazyLoadLink').on('click', function() {
+//    var link = $(this);
+//    var page = link.data('page');
+//    $.ajax({
+//      type: 'post',
+//      url: '/lazy_load_posts/',
+//      data: {
+//        'photo': photo_id,
+//        'page': page,
+//        'csrfmiddlewaretoken': window.CSRF_TOKEN
+//      },
+//      success: function(data) {
+//        console.log(data)
+//        if (data.has_next) {
+//            link.data('page', page+1);
+//        } else {
+//          link.hide();
+//        }
+//
+//        $('#posts').append(data.posts_html);
+//      },
+//      error: function(xhr, status, error) {
+//
+//      }
+//    });
+//  });
 
-        $('#posts').append(data.posts_html);
-      },
-      error: function(xhr, status, error) {
-
-      }
+size_li = $("#myList li").length;
+    x=5;
+    $('#myList li:lt('+x+')').show();
+    $('#loadMore').click(function () {
+        x= (x+5 <= size_li) ? x+5 : size_li;
+        $('#myList li:lt('+x+')').show();
     });
-  });
+    $('#showLess').click(function () {
+        x=(x-5<0) ? 3 : x-5;
+        $('#myList li').not(':lt('+x+')').hide();
+    });
+
+
 
 
 });

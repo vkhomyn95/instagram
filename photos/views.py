@@ -75,42 +75,12 @@ class PhotoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(PhotoDetailView, self).get_context_data(**kwargs)
-        comments = Comment.objects.all()[:5]
-        # page = self.request.GET.get('page')
-        # comments = paginator.Paginator(self.object.comments.all(), 5)
-        # try:
-        #     pag_comments = comments.page(page)
-        # except (paginator.PageNotAnInteger, paginator.EmptyPage):
-        #     pag_comments = comments.page(1)
-        # if self.request.is_ajax():
-        #     data = {
-        #         'pag_comments': serializers.serialize('json',pag_comments.object_list)
-        #     }
-        #     return JsonResponse(data)
-        # context['pag_comments'] = pag_comments
+        comments = self.object.comments.all()
         context['comments'] = comments
         context['form'] = AddCommentForm(initial={'post': self.object.pk})
         context['is_liked_by_user'] = self.request.user in self.object.likes.all()
 
         return context
-
-
-# def projects_list_view(request):
-#     projects_per_page = 9
-#     projects = Comment.objects.all().select_related('comments')
-#     comments = Paginator(projects, projects_per_page)
-#     page = request.GET.get('page')
-#     try:
-#         pag_comments = comments.page(page)
-#     except PageNotAnInteger:
-#         pag_comments = comments.page(1)
-#     except EmptyPage:
-#         if request.is_ajax():
-#             return HttpResponse('')
-#             pag_comments = comments.page(paginator.num_pages)
-#     if request.is_ajax():
-#         return render(request, 'cmt.html', {'pag_comments': pag_comments})
-#     return render(request, 'comments.html', {'pag_comments': pag_comments})
 
 
 @login_required
@@ -150,26 +120,34 @@ class TagIndexView(TagMixin, ListView):
         return Photo.objects.filter(tags__slug=self.kwargs.get('slug'))
 
 
-def lazy_load_posts(request):
-    page = request.POST.get('page')
-    comments = Comment.objects.all()
-    results_per_page = 5
-    paginator = Paginator(comments, results_per_page)
-    try:
-        comments = paginator.page(page)
-    except PageNotAnInteger:
-        comments = paginator.page(2)
-    except EmptyPage:
-        comments = paginator.page(paginator.num_pages)
-    posts_html = loader.render_to_string(
-        'comments.html',
-        {'comments': comments}
-    )
-    output_data = {
-        'posts_html': posts_html,
-        'has_next': comments.has_next()
-    }
-    return JsonResponse(output_data)
+# def lazy_load_posts(request):
+#     try:
+#         post = Photo.objects.get(pk=request.POST.get('photo_id'))
+#     except Photo.DoesNotExist:
+#         return JsonResponse({'errors': 'Invalid photo id'}, status=400)
+#     page = request.POST.get('page')
+#     comments = Comment.objects.filter(post=post).values_list('id', flat=True)
+#     results_per_page = 5
+#     paginator = Paginator(comments, results_per_page)
+#     try:
+#         comments = paginator.page(page)
+#     except PageNotAnInteger:
+#         comments = paginator.page(2)
+#     except EmptyPage:
+#         comments = paginator.page(paginator.num_pages)
+#     posts_html = loader.render_to_string(
+#         'comments.html',
+#         {'comments': comments}
+#     )
+#     output_data = {
+#         'photo_id': request.POST.get('photo_id'),
+#         'posts_html': posts_html,
+#         'has_next': comments.has_next(),
+#     }
+#     if request.is_ajax():
+#         return JsonResponse(output_data)
+#     else:
+#         raise Http404
 
 
 
