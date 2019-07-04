@@ -25,3 +25,12 @@ class Photo(models.Model):
 
     def __str__(self):
         return self.img
+
+
+class Lead(models.Model):
+    name = models.CharField(max_length=50)
+    domain = models.CharField(max_length=50)
+    id = models.IntegerField(primary_key=True)
+    uuid = models.IntegerField(primary_key=True)
+    roll_id = models.IntegerField(primary_key=True)
+

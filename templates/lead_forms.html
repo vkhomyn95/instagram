@@ -1,0 +1,10 @@
+{% extends 'main.html' %}
+{% block content %}
+<div >
+        <form action="{% url 'lead' %}" method="post" enctype="multipart/form-data" class="add-lead-form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="form-submit-button">Добавити ліда</button>
+        </form>
+</div>
+{% endblock %}

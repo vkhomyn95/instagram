@@ -16,8 +16,24 @@
 						{% for tag in photo.tags.all %}
 							<a href="{% url 'tagged' tag.slug %}"> #{{ tag.name }} </a>
 						{% endfor %}
+					{% include 'like_section.html' %}
 					</div>
 				</div>
+				<ul class="myList">
+					{% for comment in photo.comments.all %}
+					  <li>{{ comment.user }} | {{ comment.text }}</li>
+					{% endfor %}
+				</ul>
+				<!--<form action="{% url 'like_photo'  %}" method="post" class="form-like-ajax">-->
+
+        			<!--{% csrf_token %}-->
+
+					<!--<input type="hidden" value="{{ photo.id }}" name="photo_id">-->
+
+					<!--<button type="submit" class="btn btn-danger"-->
+							<!--id="button_like_photo_id__{{ photo.id }}">{% if is_liked %}Dislike{% else %}Like{% endif %}-->
+					<!--</button>-->
+   				 <!--</form>-->
 			</div>
 		{% endfor %}
 	</div>

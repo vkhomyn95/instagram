@@ -1,8 +1,8 @@
+
 <ul id="myList">
     {% for comment in comments %}
-      <li>{{ comment.user }} | {{ comment.text }}</li>
+    <li> {{ comment.user }}</strong> {{ comment.text }}</li>
     {% endfor %}
 </ul>
-
 <div id="loadMore">Load more</div>
 <div id="showLess">Show less</div>

@@ -4,17 +4,21 @@ from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core import paginator
 from django.core.paginator import PageNotAnInteger, Paginator, EmptyPage
+from django.core.serializers import json
 from django.db.models import ProtectedError
 from django.http import JsonResponse, Http404, HttpResponse, request
 from django.shortcuts import get_object_or_404, redirect, render_to_response, render
 from django.template import RequestContext, loader
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
 from comments.forms import AddCommentForm
 from comments.models import Comment
-from .forms import PhotoAddForm
+from .forms import PhotoAddForm, MakeLeadForm
 from .models import Photo
 from taggit.models import Tag
+import requests
+from requests.auth import HTTPBasicAuth
+import json
 
 
 class TagMixin(object):
@@ -150,5 +154,56 @@ class TagIndexView(TagMixin, ListView):
 #         raise Http404
 
 
+def lazy_load_list(request):
+    try:
+        photo = Photo.objects.get(pk=request.POST.get('photo_id'))
+    except Photo.DoesNotExist:
+        return JsonResponse({'errors': 'Invalid photo id'}, status=400)
+    data = {
+        'photo_id': request.POST.get('photo_id')
+    }
+    return JsonResponse(data)
 
 
+def make_new_lead(request):
+    form = MakeLeadForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            domain = form.cleaned_data['domain']
+            # uuid = form.cleaned_data['uuid']
+            # roll_id = form.cleaned_data['roll_id']
+            id_off = form.cleaned_data['id']
+    URL = 'http://cloud.voiptime.net/api/v1/clients/exec.do'
+    headers = {
+        'Content-Type': "application/json"
+    }
+    data = {
+        "clients": [{
+            "uuid": "000000003", "clientRoleId": 104,
+            "type": "SIMPLE", "timeZone": "Europe/Kiev", "fields": {
+                "fullName": name, "offerDomain": domain, "offerId": id_off
+            },
+            "phones": [{
+                "phoneNumber": "098555355", "type": "MOB",
+                "active": "true"
+            }], "addresses": [{
+                "address": "",
+                "type": "WORK"}, {
+                "address": "",
+                "": "HOME"}],
+            "emails": [{"email": ""
+                        }]}]
+    }
+
+    response = requests.post(URL, data=json.dumps(data), auth=HTTPBasicAuth('testcomapi', 'nBA6hGWD'), headers=headers)
+    print(response.text)
+    if response.status_code == 200:
+        return HttpResponse('Alll')
+    else:
+        return HttpResponse('User successfully added ' + str(form.cleaned_data))
+
+
+def make_lead_view(request):
+    form = MakeLeadForm(request.POST or None)
+    return render(request, 'lead_forms.html', {'form': form})
